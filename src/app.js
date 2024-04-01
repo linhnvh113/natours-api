@@ -9,6 +9,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 
 const tourRouter = require('./routes/tour.routes');
 const userRouter = require('./routes/user.routes');
+const authRouter = require('./routes/auth.routes');
 const AppError = require('./utils/app-error');
 
 const app = express();
@@ -32,6 +33,7 @@ app.use('/api', limiter);
 // Routes
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/tours', userRouter);
+app.use('/api/v1/tours', authRouter);
 
 // Handling errors
 app.all('*', (req, res, next) => {
