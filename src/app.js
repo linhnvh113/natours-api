@@ -6,12 +6,30 @@ const { default: helmet } = require('helmet');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 const mongoSanitize = require('express-mongo-sanitize');
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsdoc = require('swagger-jsdoc');
 
 const tourRouter = require('./routes/tour.routes');
 const userRouter = require('./routes/user.routes');
 const authRouter = require('./routes/auth.routes');
 const uploadRouter = require('./routes/upload.routes');
 const AppError = require('./utils/app-error');
+
+const openapiSpecification = swaggerJsdoc({
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Natours',
+      version: '1.0.0',
+    },
+    servers: [
+      {
+        url: 'http://localhost:8080/api/v1',
+      },
+    ],
+  },
+  apis: ['./docs/*.yaml'],
+});
 
 const app = express();
 
@@ -32,6 +50,7 @@ const limiter = rateLimit({
 app.use('/api', limiter);
 
 // Routes
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapiSpecification));
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/tours', userRouter);
 app.use('/api/v1/tours', authRouter);

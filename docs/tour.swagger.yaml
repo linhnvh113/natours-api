@@ -1,0 +1,233 @@
+paths:
+  /tours:
+    get:
+      operationId: GetTourPaginated
+      summary: Returns a list of tours.
+      tags:
+        - Tour
+      parameters:
+        - name: name
+          description: Tour name
+          in: query
+          schema:
+            type: string
+        - name: duration
+          in: query
+          schema:
+            type: number
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTourPaginatedDto'
+    post:
+      summary: Creates a tour.
+      tags:
+        - Tour
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTourDto'
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTourDto'
+
+  /tours/{tourId}:
+    get:
+      summary: Returns a tour by ID
+      tags:
+        - Tour
+      parameters:
+        - name: tourId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A tour object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTourDto'
+        '404':
+          description: No tour found with that ID
+    patch:
+      summary: Updates a tour by ID
+      tags:
+        - Tour
+      parameters:
+        - name: tourId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTourDto'
+      responses:
+        '200':
+          description: A tour object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTourDto'
+        '404':
+          description: No tour found with that ID
+    delete:
+      summary: Deletes a tour by ID
+      tags:
+        - Tour
+      parameters:
+        - name: tourId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No content
+        '404':
+          description: No tour found with that ID
+
+components:
+  schemas:
+    GetTourPaginatedDto:
+      type: object
+      properties:
+        currentItemCount:
+          type: integer
+        itemsPerPage:
+          type: integer
+        totalItems:
+          type: integer
+        totalPages:
+          type: integer
+        items:
+          type: array
+          $ref: '#/components/schemas/GetTourDto'
+
+    GetTourDto:
+      type: object
+      properties:
+        name:
+          type: string
+          required: true
+        slug:
+          type: string
+        duration:
+          type: integer
+          required: true
+        maxGroupSize:
+          type: integer
+          required: true
+        difficulty:
+          type: string
+          enum: [easy, medium, difficult]
+          required: true
+        ratingsAverage:
+          type: integer
+          default: 4.5
+        ratingsQuantity:
+          type: integer
+          default: 0
+        price:
+          type: integer
+          required: true
+        priceDiscount:
+          type: integer
+        summary:
+          type: string
+          required: true
+        description:
+          type: string
+        imageCover:
+          type: string
+          required: true
+        images:
+          type: array
+          items:
+            type: string
+        startDates:
+          type: array
+        secretTour:
+          type: boolean
+          default: false
+        startLocation:
+          type: object
+        locations:
+          type: array
+          items:
+            type: object
+        guides:
+          type: array
+          items:
+            type: string
+
+    CreateTourDto:
+      type: object
+      properties:
+        name:
+          type: string
+          required: true
+          unique: true
+          minLength: 10
+          maxLength: 40
+        duration:
+          type: integer
+          required: true
+        maxGroupSize:
+          type: integer
+          required: true
+        difficulty:
+          type: string
+          enum: [easy, medium, difficult]
+          required: true
+        price:
+          type: integer
+          required: true
+        summary:
+          type: string
+          required: true
+        description:
+          type: string
+        imageCover:
+          type: string
+          required: true
+        images:
+          type: array
+          items:
+            type: string
+        startDates:
+          type: array
+          items:
+            type: date
+          startLocation:
+            type: object
+          locations:
+            type: array
+            items:
+              type: object
+          guides:
+            type: array
+            items:
+              type: string
+
+    securitySchemes:
+      bearerAuth:
+        type: http
+        schema: bearer
+        bearerFormat: JWT

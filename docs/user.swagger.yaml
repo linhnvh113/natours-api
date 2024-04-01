@@ -1,0 +1,128 @@
+paths:
+  /users:
+    get:
+      summary: Get all users
+      tags:
+        - User
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+    post:
+      summary: Create a new user
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+  /users/{id}:
+    get:
+      summary: Get a user by ID
+      tags:
+        - User
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    put:
+      summary: Update a user by ID
+      tags:
+        - User
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    delete:
+      summary: Delete a user by ID
+      tags:
+        - User
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Please tell us your name!
+        email:
+          type: string
+          format: email
+          description: Please provide your email
+        photo:
+          type: string
+          default: default.jpg
+        role:
+          type: string
+          enum: [user, guide, lead-guide, admin]
+          default: user
+        password:
+          type: string
+          description: Please provide a password
+          minLength: 8
+        passwordConfirm:
+          type: string
+          description: Please confirm your password
+        passwordChangedAt:
+          type: string
+          format: date-time
+        passwordResetToken:
+          type: string
+        passwordResetExpires:
+          type: string
+          format: date-time
+        active:
+          type: boolean
+          default: true
